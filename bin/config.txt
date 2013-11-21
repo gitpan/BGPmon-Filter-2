@@ -1,5 +1,0 @@
-server = 129.82.138.67
-prefix_file = allPrefix.txt
-log_file = log.log
-validate = 0
-debug = 1

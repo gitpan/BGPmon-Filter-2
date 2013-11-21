@@ -7,12 +7,12 @@ my @exec_files = qw(bin/bgpmon_filter);
 
 WriteMakefile(
     NAME              => 'BGPmon',
-    VERSION_FROM      => 'bin/bgpmon_filter',
+    VERSION_FROM      => 'VERSION',
     EXE_FILES         => ['bin/bgpmon_filter'],
     PREREQ_PM         => {'Test'        =>  0,
-                          'BGPmon::Log' => 2.0,
-                          'BGPmon::Configure' => 2.0,
-                          'BGPmon::Fetch' => 2.0,
+                          'BGPmon::Log' => 2.02,
+                          'BGPmon::Configure' => 2.02,
+                          'BGPmon::Fetch' => 2.02,
                           'BGPmon::Validate' => 1.0,
                 	  'Thread::Queue' => 0,
                   	  'Net::IP' => 0,

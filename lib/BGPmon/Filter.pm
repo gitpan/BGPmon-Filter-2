@@ -3,11 +3,10 @@ use strict;
 use warnings;
 use constant FALSE => 0;
 use constant TRUE => 1;
-use BGPmon::Translator::XFB2PerlHash;
+use BGPmon::Translator::XFB2PerlHash::Simpler;
 use BGPmon::Filter::Prefix;
 use BGPmon::Filter::Address;
 use BGPmon::CPM::PList::Manager;
-use BGPmon::Extract;
 use Net::IP;
 use Regexp::IPv6 qw($IPv6_re);
 use List::MoreUtils qw(uniq);
@@ -824,92 +823,92 @@ sub toString{
 #
 #cut
 sub parse_xml_msg{
-	lock($lock);
-	my $fname = 'parse_xml_msg';
-	my $xmlMsg = shift;
+  lock($lock);
+  my $fname = 'parse_xml_msg';
+  my $xmlMsg = shift;
 
-	if(!defined($xmlMsg)){
-		$error_code{$fname} = NO_MSG_GIVEN;
-		$error_msg{$fname} = NO_MSG_GIVEN_MSG;
-		return undef;
-	}
+  if(!defined($xmlMsg)){
+    $error_code{$fname} = NO_MSG_GIVEN;
+    $error_msg{$fname} = NO_MSG_GIVEN_MSG;
+    return undef;
+  }
 
-	# A list of all the prefixes and AS's found during searching.
-	my @v4s = ();
-	my @v6s = ();
-	my @ases = ();
+  # A list of all the prefixes and AS's found during searching.
+  my @v4s = ();
+  my @v6s = ();
+  my @ases = ();
 
-	# The translation of the message
-  my $parseRes = BGPmon::Extract::parse_xml_msg($xmlMsg);
+  # The translation of the message
+  my $parseRes = BGPmon::Translator::XFB2PerlHash::Simpler::parse_xml_msg($xmlMsg);
   if($parseRes){
     #TODO return new value saying we couldn't parse the message.
     return 1;
   }
 
-	#Checking the withdrawn part of the message
-  my @withs = BGPmon::Extract::extract_withdraw();
+  #Checking the withdrawn part of the message
+  my @withs = BGPmon::Translator::XFB2PerlHash::Simpler::extract_withdraw();
   foreach(@withs){
     #my $pref = $_->{'content'};
     my @parts = split(/\//, $_);
-  	if(is_IPv6($parts[0])){
-	  	push(@v6s, $_);
-	 	}
-  	else{
-	  	push(@v4s, $_);
-	 	}
+    if(is_IPv6($parts[0])){
+      push(@v6s, $_);
+    }
+    else{
+      push(@v4s, $_);
+    }
   }
   
 
-	#Checking the address parts in NLRI place
-  my @nlris = BGPmon::Extract::extract_nlri();
+  #Checking the address parts in NLRI place
+  my @nlris = BGPmon::Translator::XFB2PerlHash::Simpler::extract_nlri();
   foreach(@nlris){
     my @parts = split(/\//, $_);
-  	if(is_IPv6($parts[0])){
-	  	push(@v6s, $_);
-	 	}
-  	else{
-	  	push(@v4s, $_);
-	 	}
+    if(is_IPv6($parts[0])){
+      push(@v6s, $_);
+    }
+    else{
+      push(@v4s, $_);
+    }
   }
 
 
-	#Checking the MP_NLRI part of MP_REACH_NLRI; skipping the Next Hop addresses
-  my @reach = BGPmon::Extract::extract_mpreach_nlri();
+  #Checking the MP_NLRI part of MP_REACH_NLRI; skipping the Next Hop addresses
+  my @reach = BGPmon::Translator::XFB2PerlHash::Simpler::extract_mpreach_nlri();
   foreach(@reach){
     my @parts = split(/\//, $_);
- 		if(is_IPv6($parts[0])){
-	  	push(@v6s, $_);
-  	}
- 		else{
-	  	push(@v4s, $_);
-  	}
+    if(is_IPv6($parts[0])){
+      push(@v6s, $_);
+    }
+    else{
+      push(@v4s, $_);
+    }
   }
 
 
-	#Checking the address part of MP_UNREACH_NLRI
-  my @unreach = BGPmon::Extract::extract_mpunreach_nlri();
+  #Checking the address part of MP_UNREACH_NLRI
+  my @unreach = BGPmon::Translator::XFB2PerlHash::Simpler::extract_mpunreach_nlri();
   foreach(@unreach){
     my @parts = split(/\//, $_);
- 		if(is_IPv6($parts[0])){
-	  	push(@v6s, $_);
-  	}
- 		else{
-		  push(@v4s, $_);
-	  }
+    if(is_IPv6($parts[0])){
+      push(@v6s, $_);
+    }
+    else{
+      push(@v4s, $_);
+    }
   }
 
 
 
-	#Checking for the origin in the AS_Path attribute
-  my $origin = BGPmon::Extract::extract_origin();
+  #Checking for the origin in the AS_Path attribute
+  my $origin = BGPmon::Translator::XFB2PerlHash::Simpler::extract_origin();
   push(@ases, $origin) if defined($origin);
 
 
-	@v4 = uniq(@v4s);
-	@v6 = uniq(@v6s);
-	@as = uniq(@ases);
+  @v4 = uniq(@v4s);
+  @v6 = uniq(@v6s);
+  @as = uniq(@ases);
 
-	return 0; # successful message parsing
+  return 0; # successful message parsing
 }
 
 

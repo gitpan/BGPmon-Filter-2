@@ -16,9 +16,6 @@ require_ok('BGPmon::Fetch');
 require_ok('BGPmon::Translator::XFB2BGPdump');
 require_ok('BGPmon::Translator::XFB2PerlHash::Simpler');
 require_ok('Thread::Queue');
-require_ok('Net::IP');
-require_ok('Regexp::IPv6');
-require_ok('Net::Address::IP::Local');
 require_ok('Time::HiRes');
 require_ok('BGPmon::CPM::PList::Manager');
 
